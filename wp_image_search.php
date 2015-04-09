@@ -52,20 +52,20 @@ function cwp_gimg_get_images() {
 
 
 	$search_input = $_POST['q'];
+	$index = $_POST['start'];
 	$key='AIzaSyDWSsGSlg5SsIx8Yd3i-t2LsHlnInsrZkQ';
 	$search_e_id='011702104363087577801:cpgquustv30';
-	$obj = json_decode(file_get_contents('https://www.googleapis.com/customsearch/v1?key='.$key.'&cx='.$search_e_id.'&q='.$search_input));
-
-		
-	foreach($obj->items as $iterator){
-		if ( isset($iterator->pagemap->cse_thumbnail[0]->src)):
-			echo '<img src="'.$iterator->pagemap->cse_thumbnail[0]->src.'" />';
-		endif;	
-		?>
-
-
-	<?php	
+	$content = file_get_contents('https://www.googleapis.com/customsearch/v1?key='.$key.'&cx='.$search_e_id.'&q='.$search_input.'&start='.$index);
+	$obj = json_decode($content);
+	
+	if(!empty($obj->items)){
+		foreach($obj->items as $iterator){
+			if ( !empty($iterator->pagemap->cse_thumbnail[0]->src)):
+				echo '<img src="'.$iterator->pagemap->cse_thumbnail[0]->src.'" />';
+			endif;	
+		}
 	}
+	
 	die(); // this is required to terminate immediately and return a proper response
 }
 
